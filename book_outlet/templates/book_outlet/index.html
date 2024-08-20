@@ -7,8 +7,12 @@ All books
 {% block content %}
 <ul>
     {% for book in books %}
-    <li>{{book.title}}{{book.rating}}</li>
+    {% comment %} <li><a href="{% url "book-detail" book.id  %}">{{book.title}}</a>{{book.rating}}</li> {% endcomment %}
+    {% comment %} two methods of linking with databases {% endcomment %}
+    <li><a href="{{book.get_absolute_url}}">{{book.title}}</a>{{book.rating}}</li>
     {% endfor %}
-
+    <hr>
+    <p>Total Number of Books: {{total_number_of_books}}</p>
+    <p>Average Rating : {{average_rating.rating__avg}}</p>
 </ul>
 {% endblock%}
