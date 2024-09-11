@@ -21,4 +21,22 @@
 
 
 </p>
+<h2>Reviews:</h2>
+<ul>
+    {% for review in bookreview %}
+    <li>
+        <strong>{{ review.user_name }}</strong>
+        <p>{{ review.review_text }}</p>
+        <p>Rating: {{ review.rating }}</p>
+    </li>
+    {% empty %}
+    <li>No reviews yet.</li>
+    {% endfor %}
+</ul>
+<form action="{% url 'book-detail' book.slug %}" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Submit Review</button>
+</form>
+
 {% endblock content %}

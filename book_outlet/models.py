@@ -60,6 +60,7 @@ class Book(models.Model):
     is_bestselling = models.BooleanField(default=False)
     slug = models.SlugField(default="", null=False, blank=True, db_index=True)
     publish_countries = models.ManyToManyField(Country)
+
     # for many to many ondelete function is not needed
 
     def get_absolute_url(self):
@@ -71,3 +72,13 @@ class Book(models.Model):
 
     def __str__(self):
         return f"{self.title} ({self.rating})"
+
+
+class Review(models.Model):
+    user_name = models.CharField(max_length=100)
+    review_text = models.TextField()
+    rating = models.IntegerField()
+    book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name="reviews")
+
+    def __str__(self):
+        return f"Review by {self.user_name} for {self.book.title}"

@@ -1,10 +1,13 @@
 from django.shortcuts import render, get_object_or_404
-from django.http import Http404
+from django.http import Http404, HttpResponseRedirect
 
 # Create your views here.
-from .models import Book
+from .models import Book Review
 from django import template
-from django.db.models import Avg, Max, Min
+from django.db.models import Avg, Max
+from .forms import Reviewform
+from django.urls import reverse
+
 
 
 def index(request):
@@ -28,7 +31,14 @@ def book_detail(request, slug):
     #     book = Book.objects.get(pk=id)
     # except:
     #     Http404()
-    book = get_object_or_404(Book, slug=slug)
+    if request.method == 'POST':
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+            Review.save()
+            return HttpResponseRedirect(reverse('book-detail', args=[slug]))
+    else:
+        book = get_object_or_404(Book, slug=slug)
+        form = ReviewForm()
     return render(
         request,
         "book_outlet/book_detail.html",
@@ -38,5 +48,16 @@ def book_detail(request, slug):
             "author": book.author,
             "rating": book.rating,
             "is_bestseller": book.is_bestselling,
+            "bookreview":book.reviews.all,
+            "form":form
         },
     )
+    
+def UpdateReview(request, id):
+    if request.method == 'POST':
+           existing_data = book.review.get(pk=id)
+           if existing_data:
+                form = ReviewForm(request.POST, instance=existing_data)
+                if form.is_valid():
+                    form.save()
+                    return HttpResponseRedirect(reverse('book-detail', args=[slug]))
